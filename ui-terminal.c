@@ -359,8 +359,26 @@ void ui_arrange(Ui *tui, enum UiLayout layout) {
 void ui_draw(Ui *tui) {
 	debug("ui-draw\n");
 	ui_arrange(tui, tui->layout);
-	for (Win *win = tui->windows; win; win = win->next)
+	int dx = 0, dy = 0;
+	for (Win *win = tui->windows; win; win = win->next) {
 		ui_window_draw(win);
+		if (win == tui->selwin || win->parent) {
+			View *view = &win->view;
+			view_coord_get(view, view_cursor_get(view), NULL, &tui->row, &tui->col);
+			tui->col += win->sidebar_width;
+			tui->row += dy;
+			if (!win->parent)
+				tui->col += dx;
+			else if (tui->layout == UI_LAYOUT_VERTICAL)
+				tui->row += win->prev->height;
+		}
+		if (tui->layout == UI_LAYOUT_HORIZONTAL)
+			dy += win->height;
+		else if (win->parent)
+			dy += win->prev->height;
+		else
+			dx += win->width + 1; /* +1 for the |'s */
+	}
 	if (tui->info[0])
 		ui_draw_string(tui, 0, tui->height-1, tui->info, 0, UI_STYLE_INFO);
 	vis_event_emit(tui->vis, VIS_EVENT_UI_DRAW);

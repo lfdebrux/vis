@@ -87,6 +87,7 @@ typedef struct {
 	struct Win *selwin;       /* the currently selected layout */
 	char info[UI_MAX_WIDTH];  /* info message displayed at the bottom of the screen */
 	int width, height;        /* terminal dimensions available for all windows */
+	int row, col;             /* active curor's (0-based) position in the terminal */
 	enum UiLayout layout;     /* whether windows are displayed horizontally or vertically */
 	TermKey *termkey;         /* libtermkey instance to handle keyboard input (stdin or /dev/tty) */
 	size_t ids;               /* bit mask of in use window ids */

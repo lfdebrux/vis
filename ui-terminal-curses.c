@@ -221,6 +221,7 @@ static void ui_term_backend_blit(Ui *tui) {
 			cell++;
 		}
 	}
+	move(tui->row, tui->col);
 	wnoutrefresh(stdscr);
 	if (tui->doupdate)
 		doupdate();
@@ -236,7 +237,6 @@ static bool ui_term_backend_resize(Ui *tui, int width, int height) {
 }
 
 static void ui_term_backend_save(Ui *tui, bool fscr) {
-	curs_set(1);
 	if (fscr) {
 		def_prog_mode();
 		endwin();
@@ -248,7 +248,6 @@ static void ui_term_backend_save(Ui *tui, bool fscr) {
 static void ui_term_backend_restore(Ui *tui) {
 	reset_prog_mode();
 	wclear(stdscr);
-	curs_set(0);
 }
 
 int ui_terminal_colors(void) {
@@ -268,7 +267,6 @@ static bool ui_term_backend_init(Ui *tui, char *term) {
 	nonl();
 	keypad(stdscr, TRUE);
 	meta(stdscr, TRUE);
-	curs_set(0);
 	return true;
 }
 

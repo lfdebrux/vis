@@ -12,8 +12,6 @@
  *
  *  - CSI ? 1049 h             Save cursor and use Alternate Screen Buffer (DECSET)
  *  - CSI ? 1049 l             Use Normal Screen Buffer and restore cursor (DECRST)
- *  - CSI ? 25 l               Hide Cursor (DECTCEM)
- *  - CSI ? 25 h               Show Cursor (DECTCEM)
  *  - CSI 2 J                  Erase in Display (ED)
  *  - CSI row ; column H       Cursor Position (CUP)
  *  - CSI ... m                Character Attributes (SGR)
@@ -85,10 +83,6 @@ static void screen_alternate(bool alternate) {
 	output_literal(alternate ? "\x1b[?1049h" : "\x1b[0m" "\x1b[?1049l" "\x1b[0m" );
 }
 
-static void cursor_visible(bool visible) {
-	output_literal(visible ? "\x1b[?25h" : "\x1b[?25l");
-}
-
 static void ui_term_backend_blit(Ui *tui) {
 	Buffer *buf = tui->ctx;
 	buf->len    = 0;
@@ -152,6 +146,8 @@ static void ui_term_backend_blit(Ui *tui) {
 			cell++;
 		}
 	}
+	/* set terminal's cursor position */
+	buffer_appendf(buf, "\x1b[%d;%dH", tui-> row + 1, tui->col + 1);
 	output(buf->data, buffer_length0(buf));
 }
 
@@ -161,13 +157,9 @@ static bool ui_term_backend_resize(Ui *tui, int width, int height) {
 	return true;
 }
 
-static void ui_term_backend_save(Ui *tui, bool fscr) {
-	cursor_visible(true);
-}
+static void ui_term_backend_save(Ui *tui, bool fscr) { }
 
-static void ui_term_backend_restore(Ui *tui) {
-	cursor_visible(false);
-}
+static void ui_term_backend_restore(Ui *tui) { }
 
 int ui_terminal_colors(void) {
 	char *term = getenv("TERM");
@@ -177,13 +169,11 @@ int ui_terminal_colors(void) {
 static void ui_term_backend_suspend(Ui *tui) {
 	if (!tui->termkey) return;
 	termkey_stop(tui->termkey);
-	cursor_visible(true);
 	screen_alternate(false);
 }
 
 void ui_terminal_resume(Ui *tui) {
 	screen_alternate(true);
-	cursor_visible(false);
 	termkey_start(tui->termkey);
 }
 
