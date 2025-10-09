@@ -300,7 +300,7 @@ static void window_draw_cursor_matching(Win *win, Selection *cur) {
 		return;
 	if (!view_coord_get(&win->view, pos_match, &line_match, NULL, &col_match))
 		return;
-	ui_window_style_set(&win->vis->ui, win->id, &line_match->cells[col_match], UI_STYLE_SELECTION, false);
+	ui_window_style_set(&win->vis->ui, win->id, &line_match->cells[col_match], UI_STYLE_CURSOR_MATCHING, false);
 }
 
 static void window_draw_cursor(Win *win, Selection *cur, bool isprimary) {
