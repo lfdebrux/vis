@@ -309,7 +309,7 @@ static void window_draw_cursor(Win *win, Selection *cur, bool isprimary) {
 	Line *line = cur->line;
 	if (!line)
 		return;
-	ui_window_style_set(&win->vis->ui, win->id, &line->cells[cur->col], isprimary ? UI_STYLE_CURSOR_PRIMARY : UI_STYLE_CURSOR, false);
+	if (!isprimary) ui_window_style_set(&win->vis->ui, win->id, &line->cells[cur->col], isprimary ? UI_STYLE_CURSOR_PRIMARY : UI_STYLE_CURSOR, false);
 	window_draw_cursor_matching(win, cur);
 	return;
 }
