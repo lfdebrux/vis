@@ -369,12 +369,12 @@ void ui_draw(Ui *tui) {
 			tui->row += dy;
 			if (!win->parent)
 				tui->col += dx;
-			else if (tui->layout == UI_LAYOUT_VERTICAL)
+			else if (tui->layout == UI_LAYOUT_VERTICAL && win->prev)
 				tui->row += win->prev->height;
 		}
 		if (tui->layout == UI_LAYOUT_HORIZONTAL)
 			dy += win->height;
-		else if (win->parent)
+		else if (win->parent && win->prev)
 			dy += win->prev->height;
 		else
 			dx += win->width + 1; /* +1 for the |'s */
