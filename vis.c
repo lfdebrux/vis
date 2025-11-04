@@ -461,6 +461,7 @@ void vis_window_next(Vis *vis) {
 	if (!sel)
 		return;
 	vis_window_focus(sel->next ? sel->next : vis->windows);
+	vis_draw(vis);
 }
 
 void vis_window_prev(Vis *vis) {
@@ -471,6 +472,7 @@ void vis_window_prev(Vis *vis) {
 	if (!sel)
 		for (sel = vis->windows; sel->next; sel = sel->next);
 	vis_window_focus(sel);
+	vis_draw(vis);
 }
 
 void vis_draw(Vis *vis) {
